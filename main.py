@@ -1,3 +1,6 @@
+from quiz import Quiz, get_default_quizzes
+
+
 def get_valid_number(prompt: str, min_val: int, max_val: int) -> int:
     """공백 제거, 빈 입력, 숫자 변환 실패, 범위 이탈을 검증해 유효한 정수를 반환합니다."""
     while True:
@@ -30,15 +33,43 @@ def print_menu() -> None:
     print("5. 종료")
 
 
+def play_quiz(quizzes: list[Quiz]) -> int | None:
+    """저장된 퀴즈를 출제하고 채점 결과를 출력한 뒤 점수를 반환합니다."""
+    if not quizzes:
+        print("\n[안내] 등록된 퀴즈가 없습니다. 먼저 퀴즈를 추가해 주세요.")
+        return None
+
+    total = len(quizzes)
+    correct_count = 0
+    print(f"\n▶ 퀴즈를 시작합니다! (총 {total}문제)")
+
+    for idx, quiz in enumerate(quizzes, start=1):
+        quiz.display(idx)
+        user_answer = get_valid_number("정답 입력 (1-4): ", 1, 4)
+
+        if quiz.check_answer(user_answer):
+            print("✓ 정답입니다!")
+            correct_count += 1
+        else:
+            correct_text = quiz.choices[quiz.answer - 1]
+            print(f"✗ 오답입니다. 정답은 {quiz.answer}번({correct_text})입니다.")
+
+    score = round((correct_count / total) * 100)
+    print(f"\n결과: {total}문제 중 {correct_count}문제 정답! ({score}점)")
+    return score
+
+
 def main() -> None:
     """프로그램 메인 루프입니다."""
+    quizzes = get_default_quizzes()
+
     try:
         while True:
             print_menu()
             choice = get_valid_number("선택: ", 1, 5)
 
             if choice == 1:
-                print("[안내] 퀴즈 풀기 기능 준비 중입니다.")
+                play_quiz(quizzes)
             elif choice == 2:
                 print("[안내] 퀴즈 추가 기능 준비 중입니다.")
             elif choice == 3:
