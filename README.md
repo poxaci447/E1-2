@@ -127,8 +127,32 @@ repo/
 - **브랜치 목록 (`git branch -a`)**: `main`, `feat/quiz-play`, `remotes/origin/main`
 - **주요 커밋 및 병합 그래프 (`git log --oneline --graph`)**:
 
-```text
-* (여기에 최신 git --no-pager log --oneline --graph 출력을 붙여넣으세요)
+```PowerShell
+PS C:\Users\poxac\Desktop\Codyssey\E1-2\repo> git branch -a
+>> git --no-pager log --oneline --graph
+  feat/quiz-play
+* main
+  remotes/origin/main
+* 3d6aecf (HEAD -> main, origin/main) docs: 평가 피드백 반영(README 설계/규칙/한계/매핑 문서화 및 Git 증빙 스크린샷 첨부)
+* c53db7e feat: state.json 손상 시 자동 백업 및 사용자 초기화 선택 옵션 구현
+* 7c49381 readme.md : 에러 수정
+* a42529a chore: 개발 환경 스크린샷 파일명 영문 변경 및 state.json 제외
+* 16ffe2a docs: 실행 화면 및 Git 그래프 스크린샷 추가
+* d6ec9a2 docs: clone 저장소에서 README 업데이트 실습
+* d8ad2c4 docs: README 필수 항목(실행 방법, 기능, 파일 구조, 스키마) 완성
+* b3fe675 feat: state.json 파일 저장/불러오기 및 파일 손상 복구 기능 구현
+* ef8f703 refactor: 게임 전체 관리를 위한 QuizGame 클래스 분리
+* 4a0aaee feat: 최고 점수 확인 및 갱신 기능 구현
+* efe97f6 feat: 등록된 퀴즈 목록 조회 및 빈 목록 처리 기능 구현
+* 52b89e7 feat: 새로운 퀴즈 추가 기능 및 문자열 입력 검증 구현
+*   832ea41 merge: 퀴즈 풀기 기능(feat/quiz-play) 브랜치 병합
+|\  
+| * c832238 (feat/quiz-play) feat: 퀴즈 풀기(출제, 정오답 채점, 결과 출력) 기능 구현
+|/  
+* 7ec39d1 feat: 영화 주제 기본 퀴즈 데이터 5문항 작성
+* d7325ca feat: 개별 퀴즈 표현을 위한 Quiz 클래스 정의
+* 40e879a feat: 메인 메뉴 출력 및 공통 입력 예외 처리 구현
+* f74f569 docs: 프로젝트 초기 설정 및 README, .gitignore 생성
 ```
 
 ![Git 브랜치 및 커밋 그래프](screenshot/git_graph.png)
