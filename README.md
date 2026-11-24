@@ -29,7 +29,7 @@ python main.py
 - state.json 파일이 없거나 손상된 경우 기본 영화 퀴즈 5문항으로 자동 복구합니다.
 
 ## 5. 파일 구조
-
+```text
 repo/
 ├── main.py          # 프로그램 실행 진입점
 ├── quiz.py          # 개별 퀴즈(Quiz) 클래스 및 기본 영화 퀴즈 5문항
@@ -38,6 +38,7 @@ repo/
 ├── screenshot/      # 개발 환경, 실행 화면, Git 로그 캡처 이미지
 ├── .gitignore       # Git 추적 제외 설정
 └── README.md        # 프로젝트 설명 문서
+```
 
 ## 6. 데이터 파일 설명 (state.json)
 - **경로**: 프로젝트 루트 디렉터리 (./state.json, UTF-8 인코딩)
@@ -48,7 +49,7 @@ repo/
     - quizzes (list): 퀴즈 객체 목록 (question: 문자열, choices: 4개 보기 리스트, answer: 1~4 정수)
     - best_score (int | null): 최고 점수 (미풀이 상태는 null)
 ```JSON
-    {
+{
   "quizzes": [
     {
       "question": "영화 '기생충'의 감독은?",
