@@ -1,4 +1,6 @@
 import json
+import shutil
+from datetime import datetime
 from pathlib import Path
 
 from quiz import Quiz, get_default_quizzes
@@ -17,8 +19,44 @@ class QuizGame:
         self.best_score: int | None = None
         self.load_state()
 
+    def _backup_corrupted_state(self) -> Path | None:
+        """손상된 state.json 파일을 타임스탬프가 붙은 백업 파일로 복사해 보존합니다."""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_path = self.state_file.with_name(f"state.json.bak_{timestamp}")
+        try:
+            shutil.copy2(self.state_file, backup_path)
+            return backup_path
+        except OSError as e:
+            print(f"[경고] 손상된 파일 백업에 실패했습니다: {e}")
+            return None
+
+    def _handle_corrupted_state(self) -> None:
+        """파일 손상 감지 시 기존 파일을 백업하고 사용자에게 초기화/종료 선택지를 제공합니다."""
+        print("\n[안내] state.json 파일이 손상되었거나 읽을 수 없습니다.")
+        backup_path = self._backup_corrupted_state()
+        if backup_path is not None:
+            print(f"[백업] 기존 파일은 '{backup_path.name}'으로 안전하게 보존되었습니다.")
+
+        print("복구 방법을 선택하세요:")
+        print("1. 기본 영화 퀴즈 5문항으로 초기화하고 계속 진행")
+        print("2. state.json을 덮어쓰지 않고 프로그램 종료 (수동 복구)")
+
+        try:
+            option = self.get_valid_number("선택 (1-2): ", 1, 2)
+        except (KeyboardInterrupt, EOFError):
+            option = 1
+
+        if option == 2:
+            print("[안내] 초기화 없이 프로그램을 종료합니다. 백업 파일을 확인해 주세요.")
+            raise SystemExit(0)
+
+        print("[안내] 기본 퀴즈 데이터로 초기화하여 복구합니다.")
+        self.quizzes = get_default_quizzes()
+        self.best_score = None
+        self.save_state()
+
     def load_state(self) -> None:
-        """state.json에서 데이터를 불러오고, 파일이 없거나 손상 시 기본 데이터로 복구합니다."""
+        """state.json에서 데이터를 불러오고, 파일이 없거나 손상 시 복구 절차를 수행합니다."""
         if not self.state_file.exists():
             print("[안내] 저장된 데이터 파일이 없어 기본 영화 퀴즈로 시작합니다.")
             self.quizzes = get_default_quizzes()
@@ -48,10 +86,7 @@ class QuizGame:
             score_text = f"{self.best_score}점" if self.best_score is not None else "기록 없음"
             print(f"저장된 데이터를 불러왔습니다. (퀴즈 {len(self.quizzes)}개, 최고점수 {score_text})")
         except (OSError, json.JSONDecodeError, ValueError, TypeError, KeyError):
-            print("[안내] state.json 파일이 손상되었거나 읽을 수 없어 기본 퀴즈 데이터로 복구합니다.")
-            self.quizzes = get_default_quizzes()
-            self.best_score = None
-            self.save_state()
+            self._handle_corrupted_state()
 
     def save_state(self) -> None:
         """현재 퀴즈 목록과 최고 점수를 state.json에 UTF-8로 저장합니다."""

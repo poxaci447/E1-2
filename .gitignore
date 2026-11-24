@@ -8,3 +8,5 @@ venv/
 .DS_Store
 
 state.json
+
+state.json.bak_*
