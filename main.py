@@ -23,6 +23,16 @@ def get_valid_number(prompt: str, min_val: int, max_val: int) -> int:
         return number
 
 
+def get_non_empty_text(prompt: str) -> str:
+    """앞뒤 공백을 제거하고 빈 입력을 방어해 유효한 문자열을 반환합니다."""
+    while True:
+        text = input(prompt).strip()
+        if not text:
+            print("잘못된 입력입니다. 내용을 입력해 주세요.")
+            continue
+        return text
+
+
 def print_menu() -> None:
     """메인 메뉴 화면을 출력합니다."""
     print("\n=== 나만의 영화 퀴즈 게임 ===")
@@ -59,6 +69,21 @@ def play_quiz(quizzes: list[Quiz]) -> int | None:
     return score
 
 
+def add_quiz(quizzes: list[Quiz]) -> None:
+    """새로운 퀴즈(문제, 선택지 4개, 정답 번호)를 입력받아 목록에 추가합니다."""
+    print("\n★ 새로운 퀴즈를 추가합니다.")
+    question = get_non_empty_text("문제를 입력하세요: ")
+
+    choices: list[str] = []
+    for i in range(1, 5):
+        choice_text = get_non_empty_text(f"선택지 {i}: ")
+        choices.append(choice_text)
+
+    answer = get_valid_number("정답 번호 (1-4): ", 1, 4)
+    quizzes.append(Quiz(question, choices, answer))
+    print("✓ 퀴즈가 추가되었습니다!")
+
+
 def main() -> None:
     """프로그램 메인 루프입니다."""
     quizzes = get_default_quizzes()
@@ -71,7 +96,7 @@ def main() -> None:
             if choice == 1:
                 play_quiz(quizzes)
             elif choice == 2:
-                print("[안내] 퀴즈 추가 기능 준비 중입니다.")
+                add_quiz(quizzes)
             elif choice == 3:
                 print("[안내] 퀴즈 목록 기능 준비 중입니다.")
             elif choice == 4:
