@@ -59,3 +59,4 @@ repo/
   "best_score": 100
 }
 ```
+> Git clone/pull 워크플로우 실습 완료
