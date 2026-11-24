@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class Quiz:
     """개별 퀴즈 문제, 선택지, 정답을 관리하는 클래스입니다."""
 
@@ -17,6 +20,37 @@ class Quiz:
     def check_answer(self, user_answer: int) -> bool:
         """사용자가 입력한 번호(1~4)가 정답과 일치하는지 반환합니다."""
         return user_answer == self.answer
+
+    def to_dict(self) -> dict[str, Any]:
+        """JSON 저장을 위해 Quiz 인스턴스를 딕셔너리로 변환합니다."""
+        return {
+            "question": self.question,
+            "choices": self.choices,
+            "answer": self.answer,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "Quiz":
+        """딕셔너리 데이터를 검증한 뒤 Quiz 인스턴스로 복원합니다."""
+        if not isinstance(data, dict):
+            raise ValueError("퀴즈 항목 형식이 올바르지 않습니다.")
+
+        question = data.get("question")
+        choices = data.get("choices")
+        answer = data.get("answer")
+
+        if not isinstance(question, str) or not question.strip():
+            raise ValueError("문제 텍스트가 올바르지 않습니다.")
+        if (
+            not isinstance(choices, list)
+            or len(choices) != 4
+            or not all(isinstance(c, str) and c.strip() for c in choices)
+        ):
+            raise ValueError("선택지는 4개의 문자열이어야 합니다.")
+        if isinstance(answer, bool) or not isinstance(answer, int) or not (1 <= answer <= 4):
+            raise ValueError("정답 번호는 1~4 사이의 정수여야 합니다.")
+
+        return cls(question=question.strip(), choices=[c.strip() for c in choices], answer=answer)
 
 
 def get_default_quizzes() -> list[Quiz]:
